@@ -14,10 +14,11 @@ public record DetalleConsultaDTO(
 
         Long idMedico,
 
+        String especialidad,
+
         @NotNull
-        @Future
         LocalDateTime fecha) {
     public DetalleConsultaDTO(ConsultaEntity consulta) {
-        this(consulta.getId(), consulta.getPacienteEntity().getId(), consulta.getMedicoEntity().getId(), consulta.getFechaConsulta());
+        this(consulta.getId(), consulta.getPacienteEntity().getId(), consulta.getMedicoEntity().getId(), consulta.getMedicoEntity().getEspecialidad().capitalize(), consulta.getFechaConsulta());
     }
 }

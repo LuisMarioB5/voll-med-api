@@ -23,8 +23,13 @@ import java.util.Optional;
 @Service
 @Transactional
 public class MedicoService {
+
+    private final MedicoRepository medicoRepository;
+
     @Autowired
-    private MedicoRepository medicoRepository;
+    public MedicoService(MedicoRepository medicoRepository) {
+        this.medicoRepository = medicoRepository;
+    }
 
     public MedicoEntity save(RegistrarMedicoDTO medicoDTO) {
         MedicoEntity medico = new MedicoEntity(medicoDTO);

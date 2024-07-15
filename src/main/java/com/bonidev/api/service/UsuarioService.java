@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UsuarioService {
 
-    @Autowired
     UsuarioRepository repository;
+
+    @Autowired
+    public UsuarioService(UsuarioRepository repository) {
+        this.repository = repository;
+    }
 
     public UsuarioEntity save(AutenticacionDTO dto) {
         UsuarioEntity usuario = new UsuarioEntity(dto.login(), dto.clave());

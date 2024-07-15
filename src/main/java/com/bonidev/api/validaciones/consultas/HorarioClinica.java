@@ -1,12 +1,15 @@
-package com.bonidev.api.validaciones;
+package com.bonidev.api.validaciones.consultas;
 
 import com.bonidev.api.dto.consulta.AgendarConsultaDTO;
+import com.bonidev.api.validaciones.ValidationException;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
 
 @Component
-public class HorarioClinica implements ValidadorDeConsultas {
+public class HorarioClinica implements ValidadorAgendarConsulta {
+
+    @Override
     public void validar(AgendarConsultaDTO datos) {
         var domingo = DayOfWeek.SUNDAY.equals(datos.fecha().getDayOfWeek());
         var horaDeLaConsulta = datos.fecha().getHour();

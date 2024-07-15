@@ -18,4 +18,6 @@ public record AgendarConsultaDTO(
 
         @NotNull
         @Future
-        LocalDateTime fecha) {}
+        LocalDateTime fecha,
+
+        Boolean estaActiva) {}

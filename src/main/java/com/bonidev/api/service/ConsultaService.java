@@ -2,15 +2,17 @@ package com.bonidev.api.service;
 
 import com.bonidev.api.dto.consulta.AgendarConsultaDTO;
 import com.bonidev.api.dto.consulta.CancelarConsultaDTO;
+import com.bonidev.api.dto.consulta.DetalleConsultaDTO;
 import com.bonidev.api.model.entity.ConsultaEntity;
 import com.bonidev.api.model.entity.MedicoEntity;
 import com.bonidev.api.model.entity.PacienteEntity;
 import com.bonidev.api.repository.ConsultaRepository;
 import com.bonidev.api.repository.MedicoRepository;
 import com.bonidev.api.repository.PacienteRepository;
-import com.bonidev.api.validaciones.ValidadorDeConsultas;
+import com.bonidev.api.validaciones.consultas.ValidadorAgendarConsulta;
 import com.bonidev.api.validaciones.ValidationException;
-import jakarta.persistence.EntityNotFoundException;
+import com.bonidev.api.validaciones.consultas.ValidadorCancelarConsulta;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,31 +20,35 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@Transactional
 public class ConsultaService {
 
     private final ConsultaRepository consultaRepository;
     private final MedicoRepository medicoRepository;
     private final PacienteRepository pacienteRepository;
-    private final List<ValidadorDeConsultas> validadores;
+    private final List<ValidadorAgendarConsulta> validadoresAgendarConsulta;
+    private final List<ValidadorCancelarConsulta> validadoresCancelarConsulta;
 
     @Autowired
     public ConsultaService(ConsultaRepository consultaRepository,
                            MedicoRepository medicoRepository,
                            PacienteRepository pacienteRepository,
-                           List<ValidadorDeConsultas> validadores) {
+                           List<ValidadorAgendarConsulta> validadoresAgendarConsulta,
+                           List<ValidadorCancelarConsulta> validadoresCancelarConsulta) {
         this.consultaRepository = consultaRepository;
         this.medicoRepository = medicoRepository;
         this.pacienteRepository = pacienteRepository;
-        this.validadores = validadores;
+        this.validadoresAgendarConsulta = validadoresAgendarConsulta;
+        this.validadoresCancelarConsulta = validadoresCancelarConsulta;
     }
 
     public ConsultaEntity agendar(AgendarConsultaDTO datos) {
         MedicoEntity medico = obtenerMedico(datos);
         PacienteEntity paciente = obtenerPaciente(datos.idPaciente());
 
-        validarDatos(datos);
+        validarAgendarConsulta(datos);
 
-        ConsultaEntity consulta = new ConsultaEntity(datos.id(), medico, paciente, datos.fecha());
+        ConsultaEntity consulta = new ConsultaEntity(datos.id(), medico, paciente, datos.fecha(), datos.estaActiva());
         consultaRepository.save(consulta);
 
         return consulta;
@@ -62,8 +68,8 @@ public class ConsultaService {
                 .orElseThrow(() -> new ValidationException("Paciente no encontrado"));
     }
 
-    private void validarDatos(AgendarConsultaDTO datos) {
-        validadores.forEach(validador -> validador.validar(datos));
+    private void validarAgendarConsulta(AgendarConsultaDTO datos) {
+        validadoresAgendarConsulta.forEach(validador -> validador.validar(datos));
     }
 
     private MedicoEntity seleccionarMedico(AgendarConsultaDTO datos) {
@@ -81,7 +87,34 @@ public class ConsultaService {
     }
 
     public void cancelar(CancelarConsultaDTO datos) {
-        
+        if (datos.consultaId() == null) {
+            throw new ValidationException("El id de la consulta no puede ser nulo.");
+        }
 
+        ConsultaEntity consulta = consultaRepository.getReferenceById(datos.consultaId());
+
+        validarCancelarConsulta(datos, consulta);
+        consulta.desactivar();
+    }
+
+    private void validarCancelarConsulta(CancelarConsultaDTO datos, ConsultaEntity consulta) {
+        validadoresCancelarConsulta.forEach(validador -> validador.validar(datos, consulta));
+    }
+
+    public void activarTodas() {
+        List<ConsultaEntity> consultas = consultaRepository.findAll();
+
+        consultas.forEach(ConsultaEntity::activar);
+    }
+
+    public List<DetalleConsultaDTO> mostrarTodas() {
+        List<ConsultaEntity> consultas = consultaRepository.findAll().stream()
+                .filter(ConsultaEntity::getEstaActiva)
+                .toList();
+
+        List<DetalleConsultaDTO> consultasDTO = new java.util.ArrayList<>(List.of());
+        consultas.forEach(consulta -> consultasDTO.add(new DetalleConsultaDTO(consulta)));
+
+        return consultasDTO;
     }
 }

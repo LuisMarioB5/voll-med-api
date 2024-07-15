@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/consulta")
 public class ConsultaController {
@@ -26,8 +28,19 @@ public class ConsultaController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> cancelar(@RequestBody @Valid CancelarConsultaDTO datos) {
+    public ResponseEntity<?> cancelar(@RequestBody CancelarConsultaDTO datos) {
         consultaService.cancelar(datos);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/all")
+    public ResponseEntity<String> activarTodas() {
+        consultaService.activarTodas();
+        return ResponseEntity.ok("Todas las consultas se establecieron como activas.");
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DetalleConsultaDTO>> mostrarConsultas() {
+        return ResponseEntity.ok(consultaService.mostrarTodas());
     }
 }

@@ -1,13 +1,16 @@
-package com.bonidev.api.validaciones;
+package com.bonidev.api.validaciones.consultas;
 
 import com.bonidev.api.dto.consulta.AgendarConsultaDTO;
+import com.bonidev.api.validaciones.ValidationException;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Component
-public class HoraConsulta implements ValidadorDeConsultas {
+public class HoraConsulta implements ValidadorAgendarConsulta {
+
+    @Override
     public void validar(AgendarConsultaDTO datos){
         var horaAhora = LocalDateTime.now();
         var horaDeLaConsulta = datos.fecha();

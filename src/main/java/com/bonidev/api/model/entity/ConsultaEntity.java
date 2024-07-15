@@ -1,10 +1,7 @@
 package com.bonidev.api.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -30,13 +27,21 @@ public class ConsultaEntity {
     @Column(name = "fecha_consulta")
     private LocalDateTime fechaConsulta;
 
+    @Setter
     @Column(name = "esta_activa")
-    private boolean estaActiva;
+    private Boolean estaActiva;
 
     @PrePersist
     protected void onCreate() {
         if (fechaConsulta == null) fechaConsulta = LocalDateTime.now();
-        if (!estaActiva) estaActiva = true;
+        if (estaActiva == null) estaActiva = true;
     }
 
+    public void activar() {
+        this.estaActiva = true;
+    }
+
+    public void desactivar() {
+        this.estaActiva = false;
+    }
 }

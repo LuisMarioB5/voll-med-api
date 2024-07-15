@@ -1,7 +1,7 @@
-package com.bonidev.api.validaciones;
+package com.bonidev.api.validaciones.consultas;
 
 import com.bonidev.api.dto.consulta.AgendarConsultaDTO;
 
-public interface ValidadorDeConsultas {
+public interface ValidadorAgendarConsulta {
     void validar(AgendarConsultaDTO datos);
 }
