@@ -19,8 +19,13 @@ import java.util.List;
 @Service
 @Transactional
 public class PacienteService {
+
+    private final PacienteRepository repository;
+
     @Autowired
-    private PacienteRepository repository;
+    public PacienteService(PacienteRepository repository) {
+        this.repository = repository;
+    }
 
     public PacienteEntity guardar(RegistrarPacienteDTO paciente) {
         return repository.save(new PacienteEntity(paciente));
@@ -45,6 +50,11 @@ public class PacienteService {
     public void desactivar(Long id) {
         PacienteEntity paciente = repository.getReferenceById(id);
         paciente.desactivar();
+    }
+
+    public void activar(Long id) {
+        PacienteEntity paciente = repository.getReferenceById(id);
+        paciente.activar();
     }
 
     public DetallesPacienteDTO detallesPaciente(Long id) {

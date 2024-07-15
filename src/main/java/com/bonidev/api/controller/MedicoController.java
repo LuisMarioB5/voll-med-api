@@ -54,7 +54,7 @@ public class MedicoController {
         return ResponseEntity.ok(medicos);
     }
 
-    @PutMapping
+    @PutMapping //NO FUNCIONA
     public ResponseEntity<String> actualizarDatosMedico(@RequestBody @Valid ActualizarMedicoDTO dto) {
         medicoService.actualizarMedico(dto);
         return ResponseEntity.ok("Los datos se actualizaron correctamente.");

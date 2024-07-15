@@ -1,27 +1,33 @@
 package com.bonidev.api.controller;
 
 import com.bonidev.api.dto.consulta.AgendarConsultaDTO;
+import com.bonidev.api.dto.consulta.CancelarConsultaDTO;
 import com.bonidev.api.dto.consulta.DetalleConsultaDTO;
 import com.bonidev.api.service.ConsultaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/consulta")
 public class ConsultaController {
 
+    private final ConsultaService consultaService;
+
     @Autowired
-    private ConsultaService consultaService;
+    public ConsultaController(ConsultaService consultaService) {
+        this.consultaService = consultaService;
+    }
 
     @PostMapping
-    public ResponseEntity<?> agendar(@RequestBody @Valid AgendarConsultaDTO datos) {
-//        System.out.println(datos); // PRUEBA
-
+    public ResponseEntity<DetalleConsultaDTO> agendar(@RequestBody @Valid AgendarConsultaDTO datos) {
         return  ResponseEntity.ok(new DetalleConsultaDTO(consultaService.agendar(datos)));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> cancelar(@RequestBody @Valid CancelarConsultaDTO datos) {
+        consultaService.cancelar(datos);
+        return ResponseEntity.noContent().build();
     }
 }

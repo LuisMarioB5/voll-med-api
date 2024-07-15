@@ -18,6 +18,6 @@ public record DetalleConsultaDTO(
         @Future
         LocalDateTime fecha) {
     public DetalleConsultaDTO(ConsultaEntity consulta) {
-        this(consulta.getId(), consulta.getMedicoEntity().getId(), consulta.getPacienteEntity().getId(), consulta.getFechaConsulta());
+        this(consulta.getId(), consulta.getPacienteEntity().getId(), consulta.getMedicoEntity().getId(), consulta.getFechaConsulta());
     }
 }

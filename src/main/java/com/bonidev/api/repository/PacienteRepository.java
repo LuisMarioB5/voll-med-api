@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PacienteRepository extends JpaRepository<PacienteEntity, Long> {
-    @Query("SELECT p.estaActivo FROM PacienteEntity p WHERE p.id = :idPaciente")
+    @Query("SELECT p.estaActivo FROM PacienteEntity p WHERE p.id = :pacienteId")
     Boolean findActivoById(Long idPaciente);
-
 }

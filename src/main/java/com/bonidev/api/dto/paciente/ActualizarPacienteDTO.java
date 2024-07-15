@@ -11,4 +11,4 @@ public record ActualizarPacienteDTO(
 
         String telefono,
 
-        DireccionEntity direccion) {}
+        DireccionEntity direccionActualizarDTO) {}

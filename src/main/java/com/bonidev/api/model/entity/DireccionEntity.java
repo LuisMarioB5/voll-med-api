@@ -1,6 +1,7 @@
 package com.bonidev.api.model.entity;
 
 import com.bonidev.api.dto.direccion.DireccionDTO;
+import com.bonidev.api.dto.paciente.ActualizarPacienteDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

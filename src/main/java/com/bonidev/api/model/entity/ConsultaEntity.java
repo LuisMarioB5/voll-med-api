@@ -27,11 +27,16 @@ public class ConsultaEntity {
     @JoinColumn(name = "paciente_id", nullable = false)
     private PacienteEntity pacienteEntity;
 
-    @Column(name = "fecha_consulta", nullable = false)
+    @Column(name = "fecha_consulta")
     private LocalDateTime fechaConsulta;
+
+    @Column(name = "esta_activa")
+    private boolean estaActiva;
 
     @PrePersist
     protected void onCreate() {
         if (fechaConsulta == null) fechaConsulta = LocalDateTime.now();
+        if (!estaActiva) estaActiva = true;
     }
+
 }

@@ -1,12 +1,15 @@
 package com.bonidev.api.service;
 
 import com.bonidev.api.dto.consulta.AgendarConsultaDTO;
+import com.bonidev.api.dto.consulta.CancelarConsultaDTO;
 import com.bonidev.api.model.entity.ConsultaEntity;
 import com.bonidev.api.model.entity.MedicoEntity;
 import com.bonidev.api.model.entity.PacienteEntity;
 import com.bonidev.api.repository.ConsultaRepository;
 import com.bonidev.api.repository.MedicoRepository;
 import com.bonidev.api.repository.PacienteRepository;
+import com.bonidev.api.validaciones.ValidadorDeConsultas;
+import com.bonidev.api.validaciones.ValidationException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,41 +20,68 @@ import java.util.List;
 @Service
 public class ConsultaService {
 
-    @Autowired
-    private ConsultaRepository consultaRepository;
+    private final ConsultaRepository consultaRepository;
+    private final MedicoRepository medicoRepository;
+    private final PacienteRepository pacienteRepository;
+    private final List<ValidadorDeConsultas> validadores;
 
     @Autowired
-    private MedicoRepository medicoRepository;
-
-    @Autowired
-    private PacienteRepository pacienteRepository;
+    public ConsultaService(ConsultaRepository consultaRepository,
+                           MedicoRepository medicoRepository,
+                           PacienteRepository pacienteRepository,
+                           List<ValidadorDeConsultas> validadores) {
+        this.consultaRepository = consultaRepository;
+        this.medicoRepository = medicoRepository;
+        this.pacienteRepository = pacienteRepository;
+        this.validadores = validadores;
+    }
 
     public ConsultaEntity agendar(AgendarConsultaDTO datos) {
-        PacienteEntity paciente = pacienteRepository.findById(datos.idPaciente()).orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado"));
+        MedicoEntity medico = obtenerMedico(datos);
+        PacienteEntity paciente = obtenerPaciente(datos.idPaciente());
 
-        MedicoEntity medico;
-        if (datos.idMedico() != null && medicoRepository.existsById(datos.idMedico())) {
-            medico = medicoRepository.findById(datos.idMedico()).orElseThrow(() -> new EntityNotFoundException("Medico no encontrado"));
-        } else {
-            medico = seleccionarMedico(datos);
-        }
+        validarDatos(datos);
+
         ConsultaEntity consulta = new ConsultaEntity(datos.id(), medico, paciente, datos.fecha());
-
         consultaRepository.save(consulta);
 
         return consulta;
     }
 
-    private MedicoEntity seleccionarMedico(AgendarConsultaDTO datos) {
-        if (datos.idMedico() != null) return medicoRepository.getReferenceById(datos.idMedico());
+    private MedicoEntity obtenerMedico(AgendarConsultaDTO datos) {
+        if (datos.idMedico() != null) {
+            return medicoRepository.findById(datos.idMedico())
+                    .orElseThrow(() -> new ValidationException("Medico no encontrado"));
+        } else {
+            return seleccionarMedico(datos);
+        }
+    }
 
-        if (datos.especialidad() == null) throw new RuntimeException("Debe elegir una especialidad para el médico");
+    private PacienteEntity obtenerPaciente(Long idPaciente) {
+        return pacienteRepository.findById(idPaciente)
+                .orElseThrow(() -> new ValidationException("Paciente no encontrado"));
+    }
+
+    private void validarDatos(AgendarConsultaDTO datos) {
+        validadores.forEach(validador -> validador.validar(datos));
+    }
+
+    private MedicoEntity seleccionarMedico(AgendarConsultaDTO datos) {
+        if (datos.especialidad() == null) {
+            throw new ValidationException("Debe elegir una especialidad para el médico");
+        }
 
         List<MedicoEntity> medicos = medicoRepository.seleccionarMedicoConEspecialidadEnFecha(datos.especialidad(), datos.fecha());
-        if (medicos.isEmpty()) throw new RuntimeException("No se encontró ningún médico que encaje con la solicitud");
-        Collections.shuffle(medicos); // Mezcla la lista de médicos para simular aleatoriedad
+        if (medicos.isEmpty()) {
+            throw new ValidationException("No se encontró ningún médico que encaje con la solicitud");
+        }
 
+        Collections.shuffle(medicos); // Mezcla la lista de médicos para simular aleatoriedad
         return medicos.get(0); // Selecciona el primer médico luego de mezclar la lista aleatoriamente
+    }
+
+    public void cancelar(CancelarConsultaDTO datos) {
+        
 
     }
 }

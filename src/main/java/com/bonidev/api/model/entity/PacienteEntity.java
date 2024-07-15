@@ -54,11 +54,11 @@ public class PacienteEntity {
         }
 
         if (dto.telefono() != null) {
-            this.telefono = dto. telefono();
+            this.telefono = dto.telefono();
         }
 
-        if (dto.direccion() != null) {
-            this.direccion.actualizarDatos(dto.direccion());
+        if (dto.direccionActualizarDTO() != null) {
+            this.direccion.actualizarDatos(dto.direccionActualizarDTO());
         }
     }
 

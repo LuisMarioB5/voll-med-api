@@ -1,5 +1,6 @@
 package com.bonidev.api.errors;
 
+import com.bonidev.api.validaciones.ValidationException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -27,6 +28,11 @@ public class HttpErrorHandler {
                 .toList();
 
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<String> errorValidationException(ValidationException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     private record DatosErrorValidacion(String campo, String mensajeError) {
