@@ -37,6 +37,13 @@ public class ConsultaEntity {
         if (estaActiva == null) estaActiva = true;
     }
 
+    public ConsultaEntity(MedicoEntity medicoEntity, PacienteEntity pacienteEntity, LocalDateTime fechaConsulta, Boolean estaActiva) {
+        this.medicoEntity = medicoEntity;
+        this.pacienteEntity = pacienteEntity;
+        this.fechaConsulta = fechaConsulta;
+        this.estaActiva = estaActiva;
+    }
+
     public void activar() {
         this.estaActiva = true;
     }
