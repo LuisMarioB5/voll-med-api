@@ -6,6 +6,7 @@ import com.bonidev.api.dto.medico.RegistrarMedicoDTO;
 import com.bonidev.api.model.entity.MedicoEntity;
 import com.bonidev.api.response.MultiStatusResponse;
 import com.bonidev.api.service.MedicoService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/medicos")
+@SecurityRequirement(name = "bearer-key")
 public class MedicoController {
     @Autowired
     private MedicoService medicoService;

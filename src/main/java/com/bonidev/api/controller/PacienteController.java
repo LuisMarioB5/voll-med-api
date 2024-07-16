@@ -8,6 +8,7 @@ import com.bonidev.api.model.entity.MedicoEntity;
 import com.bonidev.api.model.entity.PacienteEntity;
 import com.bonidev.api.response.MultiStatusResponse;
 import com.bonidev.api.service.PacienteService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/pacientes")
+@SecurityRequirement(name = "bearer-key")
 public class PacienteController {
     @Autowired
     private PacienteService service;
