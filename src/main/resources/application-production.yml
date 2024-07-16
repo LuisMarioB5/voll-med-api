@@ -1,17 +1,17 @@
 spring:
-  profile.active: development, tester, production
+  profile.active: production
   application.name:
     api
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/vollmed_api
-    username: root
-    password: admin
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USER}
+    password: ${DATASOURCE_PSW}
 
   jpa:
     hibernate.ddl-auto: update
     show-sql: false
     properties.hibernate:
-      format_sql: true
+      format_sql: false
 
 server.error.include-stacktrace: never

@@ -42,7 +42,7 @@ public class ConsultaService {
         this.validadoresCancelarConsulta = validadoresCancelarConsulta;
     }
 
-    public ConsultaEntity agendar(AgendarConsultaDTO datos) {
+    public DetalleConsultaDTO agendar(AgendarConsultaDTO datos) {
         MedicoEntity medico = obtenerMedico(datos);
         PacienteEntity paciente = obtenerPaciente(datos.idPaciente());
 
@@ -51,7 +51,7 @@ public class ConsultaService {
         ConsultaEntity consulta = new ConsultaEntity(datos.id(), medico, paciente, datos.fecha(), datos.estaActiva());
         consultaRepository.save(consulta);
 
-        return consulta;
+        return new DetalleConsultaDTO(consulta);
     }
 
     private MedicoEntity obtenerMedico(AgendarConsultaDTO datos) {

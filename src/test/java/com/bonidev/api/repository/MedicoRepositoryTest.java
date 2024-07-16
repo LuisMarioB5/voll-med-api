@@ -5,12 +5,8 @@ import com.bonidev.api.dto.medico.RegistrarMedicoDTO;
 import com.bonidev.api.dto.paciente.RegistrarPacienteDTO;
 import com.bonidev.api.model.Especialidad;
 import com.bonidev.api.model.entity.ConsultaEntity;
-import com.bonidev.api.model.entity.DireccionEntity;
 import com.bonidev.api.model.entity.MedicoEntity;
 import com.bonidev.api.model.entity.PacienteEntity;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
-import org.assertj.core.internal.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +15,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.lang.reflect.Array;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
